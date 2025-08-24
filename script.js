@@ -1,6 +1,8 @@
-// Substitua 'SUA_URL_DO_APPS_SCRIPT_AQUI' pela URL da sua API
+// URL da sua API do Google Apps Script
+// **SUBSTITUA AQUI PELA SUA URL DE IMPLANTAÇÃO!**
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrYkDFb5HUXtOMRCMMeI8o21W4obq66wMI9y4KwESPyIrt7UNeHtsg0qhG-Xzl31sW/exec';
 
+// Função chamada pelo Google após o login
 function handleCredentialResponse(response) {
     const token = response.credential;
     const base64Url = token.split('.')[1];
@@ -15,23 +17,32 @@ function handleCredentialResponse(response) {
     mensagemElement.textContent = "Verificando se você é um membro...";
     mensagemElement.style.color = "#3498db";
 
-    // Verifique e ajuste este bloco de código
+    // Envie o e-mail do usuário para o Apps Script para verificação
     fetch(SCRIPT_URL, {
-        method: 'POST', // <-- Este deve ser 'POST'
-        body: JSON.stringify({ email: emailUsuario }), // <-- Dados a serem enviados em JSON
+        method: 'POST',
+        body: JSON.stringify({ email: emailUsuario }),
         headers: {
-            'Content-Type': 'application/json' // <-- Crucial: avisa ao Apps Script que o dado é JSON
+            'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        // Verifica se a resposta foi bem-sucedida (código de status 200)
+        if (!response.ok) {
+            throw new Error('Erro na comunicação com a API do Google Apps Script.');
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.sucesso) {
+            // Se o Apps Script confirmou que o e-mail é de um membro
             document.getElementById('nome-membro').textContent = nomeUsuario;
             document.getElementById('foto-membro').src = urlFoto;
             
+            // Oculta a tela de login e mostra a carteirinha
             document.getElementById('login-container').classList.add('hidden');
             document.getElementById('carteirinha-container').classList.remove('hidden');
         } else {
+            // Se o Apps Script retornou um erro (não é membro)
             mensagemElement.textContent = data.mensagem;
             mensagemElement.style.color = "#e74c3c";
         }
