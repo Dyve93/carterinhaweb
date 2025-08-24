@@ -1,6 +1,6 @@
 // URL da sua API do Google Apps Script
 // **SUBSTITUA AQUI PELA SUA URL DE IMPLANTAÇÃO!**
-const SCRIPT_URL = 'AKfycbyrYkDFb5HUXtOMRCMMeI8o21W4obq66wMI9y4KwESPyIrt7UNeHtsg0qhG-Xzl31sW';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrYkDFb5HUXtOMRCMMeI8o21W4obq66wMI9y4KwESPyIrt7UNeHtsg0qhG-Xzl31sW/exec';
 
 // Função chamada pelo Google após o login
 function handleCredentialResponse(response) {
