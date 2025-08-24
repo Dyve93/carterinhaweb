@@ -10,7 +10,6 @@
     --cor-texto: #333333;
     --cor-sombra: rgba(0, 0, 0, 0.1);
     --borda-arredondada: 16px;
-    --borda-arredondada-pequena: 8px;
     --transicao-suave: all 0.3s ease-in-out;
 }
 
@@ -120,7 +119,6 @@ p {
     margin-top: 0;
 }
 
-/* Efeito de gradiente animado na borda da carteirinha */
 .carteirinha::before {
     content: '';
     position: absolute;
@@ -146,14 +144,12 @@ p {
     z-index: 1;
 }
 
-/* Estilo para a mensagem de status (loading/erro) */
 .mensagem {
     margin-top: 1.5rem;
     font-weight: 600;
     transition: color 0.3s ease;
 }
 
-/* Utilitário para esconder elementos */
 .hidden {
     display: none;
 }
