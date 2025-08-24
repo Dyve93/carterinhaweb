@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carteirinha de Membro</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <main>
+        <section id="login-container" class="container">
+            <div class="card">
+                <h2>Login de Membro</h2>
+                <p>Use sua conta Google para acessar sua carteirinha.</p>
+                <div id="g_id_onload"
+                    data-client_id="SEU_ID_DO_CLIENTE_AQUI"
+                    data-callback="handleCredentialResponse"
+                    data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin"
+                    data-type="standard"
+                    data-size="large"
+                    data-theme="outline"
+                    data-text="sign_in_with"
+                    data-shape="rectangular"
+                    data-logo_alignment="left">
+                </div>
+                <div id="mensagem" class="mensagem"></div>
+            </div>
+        </section>
+
+        <section id="carteirinha-container" class="container hidden">
+            <div class="carteirinha">
+                <div class="logo">
+                    <img src="https://i.imgur.com/K5X2H9Q.png" alt="Logo da Organização">
+                </div>
+                <div class="foto-perfil">
+                    <img id="foto-membro" src="" alt="Foto do Membro">
+                </div>
+                <div class="informacoes-membro">
+                    <p class="label">Membro</p>
+                    <p id="nome-membro" class="valor"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
