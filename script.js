@@ -1,10 +1,7 @@
-// URL da sua API do Google Apps Script
-// **SUBSTITUA AQUI PELA SUA URL DE IMPLANTAÇÃO!**
+// Substitua 'SUA_URL_DO_APPS_SCRIPT_AQUI' pela URL da sua API
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrYkDFb5HUXtOMRCMMeI8o21W4obq66wMI9y4KwESPyIrt7UNeHtsg0qhG-Xzl31sW/exec';
 
-// Função chamada pelo Google após o login
 function handleCredentialResponse(response) {
-    // O Google retorna um token, que precisa ser decodificado para extrair as informações
     const token = response.credential;
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -18,26 +15,23 @@ function handleCredentialResponse(response) {
     mensagemElement.textContent = "Verificando se você é um membro...";
     mensagemElement.style.color = "#3498db";
 
-    // Envie o e-mail do usuário para o Apps Script para verificação
+    // Verifique e ajuste este bloco de código
     fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ email: emailUsuario }),
+        method: 'POST', // <-- Este deve ser 'POST'
+        body: JSON.stringify({ email: emailUsuario }), // <-- Dados a serem enviados em JSON
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json' // <-- Crucial: avisa ao Apps Script que o dado é JSON
         }
     })
     .then(response => response.json())
     .then(data => {
         if (data.sucesso) {
-            // Se o Apps Script confirmou que o e-mail é de um membro
             document.getElementById('nome-membro').textContent = nomeUsuario;
             document.getElementById('foto-membro').src = urlFoto;
             
-            // Oculta a tela de login e mostra a carteirinha
             document.getElementById('login-container').classList.add('hidden');
             document.getElementById('carteirinha-container').classList.remove('hidden');
         } else {
-            // Se o Apps Script retornou um erro (não é membro)
             mensagemElement.textContent = data.mensagem;
             mensagemElement.style.color = "#e74c3c";
         }
