@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDV de vendas</title>
+<style>
+:root{--bg:#f4f5f9;--card:#fff;--ink:#14172b;--mute:#6b7089;--line:#e6e8f0;--brand:#4338ca;--brand2:#6d5dfc;--brand-ink:#fff;--soft:#eef0ff;--warn:#d6452f;--ok:#12805c;--shadow:0 1px 2px rgba(20,23,43,.06),0 8px 24px rgba(20,23,43,.06)}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1020;--card:#171a30;--ink:#eceefa;--mute:#9a9fbd;--line:#262a47;--brand:#8b7dff;--brand2:#a99cff;--brand-ink:#0e1020;--soft:#1f2347;--warn:#ff8a70;--ok:#47d1a0;--shadow:none}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+input,select,button{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+input,select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:1.1rem;letter-spacing:-.02em;margin-right:auto}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:.8rem;color:var(--mute)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mute)}.dot.on{background:var(--ok)}.dot.off{background:var(--warn)}
+.tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);padding:4px;border-radius:12px}
+.tabs button{padding:7px 16px;border-radius:9px;color:var(--mute);font-weight:600}
+.tabs button[aria-selected=true]{background:var(--brand);color:var(--brand-ink)}
+.who{width:170px}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.pos{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:start}
+@media(max-width:820px){.pos{grid-template-columns:1fr}}
+h2{font-size:1rem;margin:0 0 12px;letter-spacing:-.01em}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px;max-height:46vh;overflow:auto;padding:2px}
+.prod{text-align:left;padding:13px;border-radius:14px;border:1px solid var(--line);background:var(--bg);transition:transform .12s,border-color .12s}
+.prod:hover{border-color:var(--brand);transform:translateY(-2px)}
+.prod b{display:block;font-weight:650;margin-bottom:6px}
+.prod span{color:var(--brand);font-weight:700}
+.none{color:var(--mute);padding:14px 2px}
+details{margin-top:14px}summary{cursor:pointer;color:var(--mute);font-weight:600}
+.row{display:flex;gap:10px;margin-top:10px}.row>*{flex:1}
+.btn{padding:11px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:600}
+.primary{width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:var(--brand-ink);font-weight:700;margin-top:14px}
+.primary:disabled{opacity:.45;cursor:not-allowed}
+.line{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.line .nm{flex:1;font-weight:600}.line small{display:block;color:var(--mute);font-weight:400}
+.stp{display:flex;align-items:center;gap:2px}
+.stp button{width:28px;height:28px;border-radius:8px;background:var(--soft);font-weight:700}
+.stp i{min-width:22px;text-align:center;font-style:normal;font-weight:700}
+.x{color:var(--warn);padding:4px 8px}
+.pay{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}
+.pay button{padding:10px 4px;border-radius:12px;border:1px solid var(--line);font-weight:600;font-size:.88rem}
+.pay button[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+label{display:block;font-size:.8rem;color:var(--mute);margin:14px 0 5px;font-weight:600}
+.sum{display:flex;justify-content:space-between;color:var(--mute);margin-top:6px}
+.total{display:flex;justify-content:space-between;align-items:baseline;font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin-top:10px}
+.msg{min-height:1.3em;margin-top:10px;font-size:.88rem}.msg.err{color:var(--warn)}.msg.ok{color:var(--ok)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:700px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{padding:16px;border-radius:16px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.kpi b{display:block;font-size:1.45rem;letter-spacing:-.02em}.kpi span{font-size:.8rem;color:var(--mute)}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.rk{margin-bottom:11px}.rk div{display:flex;justify-content:space-between;font-size:.88rem;margin-bottom:4px}
+.rk i{display:block;height:7px;border-radius:9px;background:var(--soft)}.rk i u{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--brand),var(--brand2))}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{text-align:left;padding:8px 4px;border-bottom:1px solid var(--line)}th{color:var(--mute);font-weight:600}
+.n{text-align:right;white-space:nowrap}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="top"><div class="bar">
+  <div class="logo">PDV</div>
+  <span class="pill"><span class="dot" id="dot"></span><span id="stText">Não conectado</span></span>
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tabV" aria-selected="true">Vender</button>
+    <button role="tab" id="tabR" aria-selected="false">Relatório</button>
+  </div>
+  <input class="who" id="seller" placeholder="Vendedor" aria-label="Vendedor">
+</div></div>
+
+<main>
+<div id="vSell">
+  <div class="card" style="margin-bottom:16px">
+    <details id="cfg" style="margin:0"><summary>Conexão com o Google Sheets</summary>
+      <label for="sheetUrl">Link da planilha (pública)</label>
+      <input id="sheetUrl" placeholder="https://docs.google.com/spreadsheets/d/...">
+      <label for="scriptUrl">URL do Apps Script (para gravar as vendas)</label>
+      <input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
+      <button class="primary" id="saveCfg" style="width:auto;padding:11px 20px">Salvar e conectar</button>
+    </details>
+  </div>
+  <div class="pos">
+    <div class="card">
+      <h2>Produtos</h2>
+      <input id="search" type="search" placeholder="Buscar produto..." aria-label="Buscar produto" autocomplete="off">
+      <div class="grid" id="grid"></div>
+      <details><summary>Produto fora do catálogo</summary>
+        <div class="row"><input id="mName" placeholder="Nome"><input id="mPrice" inputmode="decimal" placeholder="Preço"></div>
+        <button class="btn" id="mAdd" style="margin-top:10px">Adicionar</button>
+      </details>
+    </div>
+    <div class="card">
+      <h2>Carrinho</h2>
+      <div id="cart"></div>
+      <div class="none" id="empty">Toque em um produto para adicionar.</div>
+      <label for="disc">Desconto (R$)</label>
+      <input id="disc" inputmode="decimal" placeholder="0,00">
+      <label>Pagamento</label>
+      <div class="pay" id="pay"><button aria-pressed="false">Pix</button><button aria-pressed="false">Crédito</button><button aria-pressed="false">Débito</button><button aria-pressed="false">Dinheiro</button></div>
+      <div class="sum"><span>Subtotal</span><span id="sub">R$ 0,00</span></div>
+      <div class="total"><span>Total</span><span id="total">R$ 0,00</span></div>
+      <button class="primary" id="finish" disabled>Finalizar venda</button>
+      <div class="msg" id="msg" role="status"></div>
+    </div>
+  </div>
+</div>
+
+<div id="vRep" class="hide">
+  <div class="row" style="margin:0 0 14px;justify-content:flex-end">
+    <select id="period" aria-label="Período" style="max-width:180px;flex:none"><option value="today">Hoje</option><option value="7">Últimos 7 dias</option><option value="all">Tudo</option></select>
+    <button class="btn" id="refresh" style="flex:none">Atualizar</button>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><b id="kTotal">R$ 0,00</b><span>Faturamento</span></div>
+    <div class="kpi"><b id="kSales">0</b><span>Vendas</span></div>
+    <div class="kpi"><b id="kTicket">R$ 0,00</b><span>Ticket médio</span></div>
+    <div class="kpi"><b id="kDisc">R$ 0,00</b><span>Descontos</span></div>
+  </div>
+  <div class="cols">
+    <div class="card"><h2>Por vendedor</h2><div id="bySeller"></div></div>
+    <div class="card"><h2>Por pagamento</h2><div id="byPay"></div></div>
+    <div class="card"><h2>Mais vendidos</h2><div id="byProd"></div></div>
+  </div>
+  <div class="card" style="margin-top:16px"><h2>Últimas vendas</h2>
+    <table><thead><tr><th>Data</th><th>Vendedor</th><th>Produto</th><th class="n">Qtd.</th><th>Pgto.</th><th class="n">Total</th></tr></thead><tbody id="last"></tbody></table>
+  </div>
+</div>
+</main>
+
+<script>
+// OPCIONAL: cole seus links aqui para conectar sozinho ao abrir.
+const DEFAULT_SHEET_URL='https://docs.google.com/spreadsheets/d/1zqI6IxHQakWy3z6JFIOtZtI6pQ8Tiqh1S6Dj2aXso04/edit?gid=0#gid=0';
+const DEFAULT_SCRIPT_URL='https://script.google.com/macros/s/AKfycbw7Cph3kf3SSCpvtGlzcLYHnNPpCHlBdKlg25w0vaXhphQVCLi5pbCpg_oeGfFWdEXJrA/exec';
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const store={get(k){try{return localStorage.getItem(k)||''}catch(e){return ''}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let sheetId='',scriptUrl='',catalog=[],cart=[],payment='',sales=[];
+
+function num(v){let s=String(v==null?'':v).replace(/[^\d,.\-]/g,'');if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');const n=parseFloat(s);return isNaN(n)?0:n}
+function parseCSV(t){const rows=[];let r=[],c='',q=false;
+  for(let i=0;i<t.length;i++){const ch=t[i];
+    if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}
+    else if(ch=='"')q=true;else if(ch==','){r.push(c);c=''}
+    else if(ch=='\n'){r.push(c);rows.push(r);r=[];c=''}else if(ch!='\r')c+=ch}
+  if(c||r.length){r.push(c);rows.push(r)}return rows}
+async function readTab(name){
+  const url=`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(name)}&_=${Date.now()}`;
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok)throw new Error('http '+res.status);
+  const t=await res.text();
+  if(t.trim().startsWith('<'))throw new Error('privada');
+  return parseCSV(t).filter(r=>r.some(x=>x.trim())).filter(r=>!/^(produtos?|nome|item|data)$/i.test(r[0].trim())&&!(r[0].trim()==='A'&&(r[1]||'').trim()==='B'));
+}
+function setStatus(k,t){$('dot').className='dot '+k;$('stText').textContent=t}
+function say(t,k){$('msg').textContent=t;$('msg').className='msg '+(k||'')}
+
+async function connect(){
+  sheetId=($('sheetUrl').value.match(/\/d\/([\w-]+)/)||[])[1]||'';scriptUrl=$('scriptUrl').value.trim();
+  if(!sheetId){setStatus('off','Cole o link da planilha');return}
+  try{
+    catalog=(await readTab('Produtos')).map(r=>({name:r[0].trim(),price:num(r[1])})).filter(p=>p.name);
+    setStatus('on',`Conectado · ${catalog.length} produtos`+(scriptUrl?'':' · sem script (não grava)'));
+    drawGrid();loadReport();
+  }catch(e){const m=String(e.message);setStatus('off',m==='privada'?'Planilha não está pública (Compartilhar > Qualquer pessoa com o link)':m.startsWith('http')?'Erro ao ler a planilha ('+m+'). Confira a aba "Produtos"':'Navegador bloqueou a leitura. Abra o PDV por um site (GitHub Pages/Netlify), não pelo arquivo')}
+}
+$('saveCfg').onclick=()=>{store.set('pdv_sheet',$('sheetUrl').value);store.set('pdv_script',$('scriptUrl').value);connect();$('cfg').open=false};
+
+function drawGrid(){
+  const q=$('search').value.trim().toLowerCase();
+  const list=catalog.filter(p=>p.name.toLowerCase().includes(q));
+  $('grid').innerHTML=list.length?list.map((p,i)=>`<button class="prod" data-n="${esc(p.name)}"><b>${esc(p.name)}</b><span>${brl(p.price)}</span></button>`).join(''):`<div class="none">${catalog.length?'Nenhum produto encontrado.':'Conecte a planilha para ver os produtos.'}</div>`;
+  $('grid').querySelectorAll('.prod').forEach(b=>b.onclick=()=>{const p=catalog.find(x=>x.name===b.dataset.n);addItem(p.name,p.price)});
+}
+$('search').addEventListener('input',drawGrid);
+$('search').addEventListener('keydown',e=>{if(e.key==='Enter'){const q=$('search').value.trim().toLowerCase();const l=catalog.filter(p=>p.name.toLowerCase().includes(q));if(l.length===1){addItem(l[0].name,l[0].price);$('search').value='';drawGrid()}}});
+function addItem(name,price){const f=cart.find(i=>i.name===name&&i.price===price);if(f)f.qty++;else cart.push({name,price,qty:1});say('');render()}
+$('mAdd').onclick=()=>{const n=$('mName').value.trim(),p=num($('mPrice').value);if(!n||p<=0){say('Informe nome e preço.','err');return}addItem(n,p);$('mName').value='';$('mPrice').value=''};
+
+document.querySelectorAll('#pay button').forEach(b=>b.onclick=()=>{payment=b.textContent;document.querySelectorAll('#pay button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
+$('disc').addEventListener('input',render);
+$('seller').addEventListener('input',()=>{store.set('pdv_seller',$('seller').value);render()});
+
+const subtotal=()=>cart.reduce((s,i)=>s+i.price*i.qty,0);
+const discount=()=>Math.min(num($('disc').value),subtotal());
+function render(){
+  $('cart').innerHTML=cart.map((i,k)=>`<div class="line"><div class="nm">${esc(i.name)}<small>${brl(i.price)} cada</small></div><div class="stp"><button data-k="${k}" data-d="-1" aria-label="Menos">−</button><i>${i.qty}</i><button data-k="${k}" data-d="1" aria-label="Mais">+</button></div><b>${brl(i.price*i.qty)}</b><button class="x" data-k="${k}" data-d="0" aria-label="Remover">✕</button></div>`).join('');
+  $('cart').querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=+b.dataset.k,d=+b.dataset.d;if(d===0||cart[k].qty+d<1)cart.splice(k,1);else cart[k].qty+=d;render()});
+  $('empty').style.display=cart.length?'none':'block';
+  $('sub').textContent=brl(subtotal());$('total').textContent=brl(subtotal()-discount());
+  $('finish').disabled=!(cart.length&&payment&&$('seller').value.trim());
+}
+
+$('finish').onclick=async()=>{
+  if(!scriptUrl){say('Cole a URL do Apps Script em "Conexão" para gravar.','err');return}
+  const sub=subtotal(),d=discount(),id='V'+Date.now(),seller=$('seller').value.trim(),now=new Date();
+  const stamp=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${now.toTimeString().slice(0,8)}`;
+  const rows=cart.map(i=>{const l=i.price*i.qty,ld=sub?d*l/sub:0;return{venda:id,vendedor:seller,produto:i.name,qtd:i.qty,preco:i.price,desconto:+ld.toFixed(2),total:+(l-ld).toFixed(2),pagamento:payment}});
+  $('finish').disabled=true;say('Salvando…');
+  try{
+    await fetch(scriptUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({rows})});
+    rows.forEach(r=>sales.push({data:stamp,venda:r.venda,vendedor:r.vendedor,produto:r.produto,qtd:r.qtd,desc:r.desconto,total:r.total,pag:r.pagamento}));
+    cart=[];$('disc').value='';say('Venda registrada!','ok');render();drawReport();
+    setTimeout(loadReport,4000);
+  }catch(e){say('Não consegui salvar. Verifique a conexão e o script.','err');render()}
+};
+
+function dayOf(s){let m=String(s).match(/(\d{4})-(\d{2})-(\d{2})/);if(m)return new Date(+m[1],m[2]-1,+m[3]);
+  m=String(s).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);return m?new Date(+m[3],m[2]-1,+m[1]):null}
+async function loadReport(){
+  if(!sheetId)return;
+  try{
+    const server=(await readTab('Vendas')).map(r=>({data:r[0],venda:r[1],vendedor:r[2],produto:r[3],qtd:num(r[4]),desc:num(r[6]),total:num(r[7]),pag:r[8]}));
+    sales=server;drawReport();
+  }catch(e){drawReport()}
+}
+function rank(id,list,key,val,fmt){
+  const m={};list.forEach(x=>{const k=x[key]||'—';m[k]=(m[k]||0)+val(x)});
+  const arr=Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8),max=arr.length?arr[0][1]:1;
+  $(id).innerHTML=arr.length?arr.map(([k,v])=>`<div class="rk"><div><span>${esc(k)}</span><b>${fmt(v)}</b></div><i><u style="width:${max?Math.max(4,v/max*100):0}%"></u></i></div>`).join(''):'<div class="none">Sem vendas no período.</div>';
+}
+function drawReport(){
+  const p=$('period').value,t=new Date(),t0=new Date(t.getFullYear(),t.getMonth(),t.getDate());
+  const list=sales.filter(s=>{if(p==='all')return true;const d=dayOf(s.data);if(!d)return false;return p==='today'?+d===+t0:d>=new Date(+t0-6*864e5)});
+  const total=list.reduce((s,x)=>s+x.total,0),n=new Set(list.map(x=>x.venda||x.data)).size;
+  $('kTotal').textContent=brl(total);$('kSales').textContent=n;$('kTicket').textContent=brl(n?total/n:0);$('kDisc').textContent=brl(list.reduce((s,x)=>s+x.desc,0));
+  rank('bySeller',list,'vendedor',x=>x.total,brl);rank('byPay',list,'pag',x=>x.total,brl);rank('byProd',list,'produto',x=>x.qtd,v=>v+' un.');
+  $('last').innerHTML=list.length?list.slice(-10).reverse().map(x=>`<tr><td>${esc(String(x.data).slice(5,16))}</td><td>${esc(x.vendedor)}</td><td>${esc(x.produto)}</td><td class="n">${x.qtd}</td><td>${esc(x.pag)}</td><td class="n">${brl(x.total)}</td></tr>`).join(''):'<tr><td colspan="6" class="none">Sem vendas no período.</td></tr>';
+}
+$('refresh').onclick=loadReport;$('period').onchange=drawReport;
+setInterval(()=>{if(!$('vRep').classList.contains('hide'))loadReport()},30000);
+
+function tab(r){$('vSell').classList.toggle('hide',r);$('vRep').classList.toggle('hide',!r);$('tabV').setAttribute('aria-selected',!r);$('tabR').setAttribute('aria-selected',r);if(r)loadReport()}
+$('tabV').onclick=()=>tab(false);$('tabR').onclick=()=>tab(true);
+
+$('sheetUrl').value=store.get('pdv_sheet')||DEFAULT_SHEET_URL;
+$('scriptUrl').value=store.get('pdv_script')||DEFAULT_SCRIPT_URL;
+$('seller').value=store.get('pdv_seller');
+if($('sheetUrl').value){setStatus('','Conectando…');connect()}else{$('cfg').open=true;setStatus('off','Cole o link da planilha em "Conexão"')}
+render();drawGrid();
+</script>
+</body>
+</html>
